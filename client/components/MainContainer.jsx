@@ -11,6 +11,7 @@ export default function MainContainer() {
   const [userName, setUserName] = useState('');
   const [user, setUser] = useState({});
   const [events, setEvents] = useState([]);
+
   //pull user data after OAuth login - all variables are named from SQL DB columns
   useEffect(() => {
     axios.get(`/api/info?userName=${userName}`).then((res) => {
@@ -20,6 +21,7 @@ export default function MainContainer() {
         lastname: res.data.users.lastname,
         profilephoto: res.data.users.profilephoto,
       };
+      console.log(res);
       let eventsInfo = res.data.events;
       setUser(userInfo);
       setEvents(eventsInfo);
@@ -31,7 +33,7 @@ export default function MainContainer() {
     setUserName(username);
   }
   //handles the state change and posts to database on event creation
-  function handleCreateEvent(event, newEvent, eventIndex) {
+  function handleCreateOrModifyEvent(event, newEvent, eventIndex) {
     console.log(event);
     let {
       eventtitle,
@@ -56,8 +58,7 @@ export default function MainContainer() {
             ...updatedEvents[eventIndex],
             ...event,
           };
-
-          return setEvents(updatedEvents);
+          return setEvents([...updatedEvents]);
         });
     } else {
       axios
@@ -104,13 +105,13 @@ export default function MainContainer() {
         <Container className='header'>
           <Profile {...user} />
           <AddSearchEvent
-            addEvent={handleCreateEvent}
+            addEvent={handleCreateOrModifyEvent}
             searchEvent={handleSearchEvent}
             events={events}
           />
         </Container>
         <EventsFeed
-          addEvent={handleCreateEvent}
+          addEvent={handleCreateOrModifyEvent}
           user={user}
           events={events}
           setEvents={setEvents}

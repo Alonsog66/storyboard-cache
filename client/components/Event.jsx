@@ -22,6 +22,7 @@ export default function Event(props) {
                 eventIndex={props.id}
                 addEvent={props.addEvent}
                 updatingEvent={'updatingEvent'}
+                eventInfo={props}
               />
 
               <Button

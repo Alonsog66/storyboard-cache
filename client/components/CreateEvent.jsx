@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { GoogleComponent } from 'react-google-location';
 import DateTimePicker from 'react-datetime-picker';
 
@@ -6,7 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearchPlus } from '@fortawesome/free-solid-svg-icons';
 import { Modal, Button, Form, Card } from 'react-bootstrap';
 
-export default function CreateEvent({ addEvent, updatingEvent, eventIndex }) {
+export default function CreateEvent({
+  addEvent,
+  updatingEvent,
+  eventIndex,
+  eventInfo,
+}) {
   /* Form data */
   const initialFormData = Object.freeze({
     eventtitle: '',
@@ -14,9 +19,11 @@ export default function CreateEvent({ addEvent, updatingEvent, eventIndex }) {
     eventdetails: '',
   });
 
-  const [formData, updateFormData] = React.useState(initialFormData);
+  // State Declaration
+  const [formData, updateFormData] = useState(initialFormData);
   const [dateTime, onChange] = useState(new Date());
   const [show, setShow] = useState(false);
+
   //handles any change tot he form and updates the state
   const handleChange = (e) => {
     if (e.place) {
@@ -46,15 +53,21 @@ export default function CreateEvent({ addEvent, updatingEvent, eventIndex }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  // Conditional render event declaration
   let newEvent = true;
   let buttonTitle = 'Add Event';
   let formTitle = 'Create New Event';
   let cardClass = 'cardContainer';
+  let eventTitle = '';
+  let eventDetails = '';
+
   if (updatingEvent) {
     newEvent = false;
     buttonTitle = '';
     formTitle = 'Update Event';
     cardClass = 'cardContainer-small';
+    eventTitle = eventInfo.eventtitle;
+    eventDetails = eventInfo.eventdetails;
   }
   return (
     <div>
@@ -77,6 +90,7 @@ export default function CreateEvent({ addEvent, updatingEvent, eventIndex }) {
                 onChange={handleChange}
                 required
                 type='text'
+                defaultValue={eventTitle}
                 placeholder='Enter title'
               />
             </Form.Group>
@@ -104,6 +118,7 @@ export default function CreateEvent({ addEvent, updatingEvent, eventIndex }) {
               <Form.Label>Event Description</Form.Label>
               <Form.Control
                 name='eventdetails'
+                defaultValue={eventDetails}
                 onChange={handleChange}
                 required
                 as='textarea'
